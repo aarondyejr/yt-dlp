@@ -123,7 +123,7 @@ pub struct Video {
     /// If the video was a live stream.
     pub live_status: Option<String>,
     /// If the video is playable in an embed.
-    pub playable_in_embed: bool,
+    pub playable_in_embed: Option<bool>,
 
     /// The extractor information.
     #[serde(flatten)]
