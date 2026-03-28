@@ -121,7 +121,7 @@ pub struct Video {
     #[serde(rename = "_has_drm")]
     pub has_drm: Option<DrmStatus>,
     /// If the video was a live stream.
-    pub live_status: String,
+    pub live_status: Option<String>,
     /// If the video is playable in an embed.
     pub playable_in_embed: bool,
 
@@ -250,8 +250,8 @@ impl Video {
         self.thumbnails
             .iter()
             .filter(|t| t.width.is_some() && t.height.is_some())
-            .max_by_key(|t| (t.width.unwrap_or(0) * t.height.unwrap_or(0), t.preference))
-            .or_else(|| self.thumbnails.iter().max_by_key(|t| t.preference))
+            .max_by_key(|t| (t.width.unwrap_or(0) * t.height.unwrap_or(0), t.preference.unwrap_or_default()))
+            .or_else(|| self.thumbnails.iter().max_by_key(|t| t.preference.unwrap_or_default()))
     }
 
     /// Returns the worst thumbnail by resolution (width × height), breaking ties by preference.
@@ -265,8 +265,8 @@ impl Video {
         self.thumbnails
             .iter()
             .filter(|t| t.width.is_some() && t.height.is_some())
-            .min_by_key(|t| (t.width.unwrap_or(0) * t.height.unwrap_or(0), t.preference))
-            .or_else(|| self.thumbnails.iter().min_by_key(|t| t.preference))
+            .min_by_key(|t| (t.width.unwrap_or(0) * t.height.unwrap_or(0), t.preference.unwrap_or_default()))
+            .or_else(|| self.thumbnails.iter().min_by_key(|t| t.preference.unwrap_or_default()))
     }
 
     /// Returns the smallest thumbnail that meets the given minimum dimensions.
@@ -359,7 +359,7 @@ impl Video {
     pub fn is_currently_live(&self) -> bool {
         const STATUS: &str = "is_live";
 
-        self.is_live == Some(true) || self.live_status == STATUS
+        self.is_live == Some(true) || self.live_status.unwrap_or_default() == STATUS
     }
 
     /// Returns whether the video is an upcoming/scheduled stream.
@@ -371,7 +371,7 @@ impl Video {
     pub fn is_upcoming(&self) -> bool {
         const STATUS: &str = "is_upcoming";
 
-        self.live_status == STATUS
+        self.live_status.unwrap_or_default() == STATUS
     }
 
     /// Returns all formats using the HLS (m3u8) protocol.

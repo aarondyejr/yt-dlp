@@ -11,7 +11,7 @@ pub struct Thumbnail {
     /// The URL of the thumbnail.
     pub url: String,
     /// The preference index of the thumbnail, e.g. '-35' or '0'.
-    pub preference: i64,
+    pub preference: Option<i64>,
 
     /// The ID of the thumbnail.
     pub id: String,

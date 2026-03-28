@@ -414,7 +414,7 @@ fn resolve_live_format(video: &Video, format: Option<&Format>, mode: LiveMode) -
     if !video.is_currently_live() {
         return Err(Error::live_unavailable(
             video.webpage_url.as_deref().unwrap_or("unknown"),
-            &video.live_status,
+            &video.live_status.unwrap_or_default(),
             "video is not currently live",
         ));
     }
