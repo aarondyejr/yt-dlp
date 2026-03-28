@@ -98,18 +98,16 @@ impl Format {
     ///
     /// The [`FormatType`] determined from the codec and manifest information.
     pub fn format_type(&self) -> FormatType {
-        if self.download_info.manifest_url.is_some() {
-            return FormatType::Manifest;
-        }
-
         if self.storyboard_info.fragments.is_some() {
             return FormatType::Storyboard;
         }
 
-        let audio = self.codec_info.audio_codec.is_some();
-        let video = self.codec_info.video_codec.is_some();
+        let has_audio = self.codec_info.audio_codec.is_some();
+        let has_video = self.codec_info.video_codec.is_some()
+            || self.video_resolution.height.is_some()
+            || matches!(self.codec_info.video_ext, ref ext if ext != &Extension::None);
 
-        match (audio, video) {
+        match (has_audio, has_video) {
             (true, true) => FormatType::AudioVideo,
             (true, false) => FormatType::Audio,
             (false, true) => FormatType::Video,
