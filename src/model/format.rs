@@ -102,7 +102,8 @@ impl Format {
             return FormatType::Storyboard;
         }
 
-        let has_audio = self.codec_info.audio_codec.is_some();
+        let has_audio = self.codec_info.audio_codec.is_some()
+            || self.codec_info.audio_ext != Extension::None;
         let has_video = self.codec_info.video_codec.is_some()
             || self.video_resolution.height.is_some()
             || matches!(self.codec_info.video_ext, ref ext if ext != &Extension::None);
@@ -110,7 +111,7 @@ impl Format {
         match (has_audio, has_video) {
             (true, true) => FormatType::AudioVideo,
             (true, false) => FormatType::Audio,
-            (false, true) => FormatType::Video,
+            (false, true) => FormatType::AudioVideo, // assume combined if video detected but no audio info
             _ => FormatType::Unknown,
         }
     }
