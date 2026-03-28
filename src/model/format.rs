@@ -649,7 +649,7 @@ impl FormatType {
     ///
     /// `true` if the format type is [`FormatType::Video`].
     pub fn is_video(&self) -> bool {
-        matches!(self, FormatType::Video)
+        matches!(self, FormatType::Video | FormatType::AudioVideo)
     }
 
     /// Checks if the format is an audio format.
